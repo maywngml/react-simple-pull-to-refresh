@@ -221,7 +221,6 @@ var PullToRefresh = function (_a) {
     });
   };
   var onTouchStart = function (e) {
-    console.log('index ontouchStart');
     isDragging = false;
     if (e instanceof MouseEvent) {
       startY = e.pageY;
