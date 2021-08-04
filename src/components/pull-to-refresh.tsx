@@ -134,6 +134,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
   };
 
   const onTouchStart = (e: MouseEvent | TouchEvent): void => {
+    console.log('touchstart');
     isDragging = false;
     if (e instanceof MouseEvent) {
       startY = e.pageY;
