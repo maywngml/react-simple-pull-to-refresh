@@ -121,9 +121,6 @@ var PullToRefresh = function (_a) {
     backgroundColor = _a.backgroundColor,
     _j = _a.className,
     className = _j === void 0 ? '' : _j,
-    _k = _a.isFeedsGrid,
-    isFeedsGrid = _k === void 0 ? false : _k,
-    handlePointerDown = _a.handlePointerDown,
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
   var containerRef = useRef(null);
@@ -139,14 +136,11 @@ var PullToRefresh = function (_a) {
     function () {
       if (!isPullable || !childrenRef || !childrenRef.current) return;
       childrenRef.current.addEventListener('touchstart', onTouchStart, { passive: true });
-      // childrenRef.current.addEventListener('touchstart', _a.handlePointerDown, { passive: true });
       childrenRef.current.addEventListener('mousedown', onTouchStart);
       childrenRef.current.addEventListener('touchmove', onTouchMove, { passive: false });
-      // childrenRef.current.addEventListener('touchmove', _a.handlePointerMove, { passive: false });
       childrenRef.current.addEventListener('mousemove', onTouchMove);
       window.addEventListener('scroll', onScroll);
       childrenRef.current.addEventListener('touchend', onEnd);
-      // childrenRef.current.addEventListener('touchend', _a.handlePointerUp);
       childrenRef.current.addEventListener('mouseup', onEnd);
       document.body.addEventListener('mouseleave', onEnd);
       return function () {
@@ -248,7 +242,7 @@ var PullToRefresh = function (_a) {
     isDragging = true;
   };
   var onTouchMove = function (e) {
-    if (e.type === 'touchmove' && isFeedsGrid) {
+    if (e.type === 'touchmove') {
       handlePointerMove(e);
     }
     if (!isDragging) {
@@ -298,7 +292,7 @@ var PullToRefresh = function (_a) {
     isDragging = false;
     startY = 0;
     currentY = 0;
-    if (e.type === 'touchend' && isFeedsGrid) {
+    if (e.type === 'touchend') {
       handlePointerUp(e);
     }
     // Container has not been dragged enough, put it back to it's initial state
