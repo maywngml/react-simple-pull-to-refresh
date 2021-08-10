@@ -121,6 +121,8 @@ var PullToRefresh = function (_a) {
     backgroundColor = _a.backgroundColor,
     _j = _a.className,
     className = _j === void 0 ? '' : _j,
+    contentsAreaHeight = _a.contentsAreaHeight,
+    pinchFlag = _a.pinchFlag,
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
   var containerRef = useRef(null);
@@ -132,6 +134,9 @@ var PullToRefresh = function (_a) {
   var isDragging = false;
   var startY = 0;
   var currentY = 0;
+  var touchesLength = 0;
+  var contentsAreaHeight = window.outerHeight - 121;
+
   useEffect(
     function () {
       if (!isPullable || !childrenRef || !childrenRef.current) return;
@@ -163,6 +168,8 @@ var PullToRefresh = function (_a) {
       maxPullDownDistance,
       canFetchMore,
       fetchMoreThreshold,
+      handlePointerMove,
+      handlePointerUp,
     ]
   );
   /**
@@ -183,7 +190,8 @@ var PullToRefresh = function (_a) {
       /**
        * Proceed
        */
-      if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+      if (!pinchFlag && canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+        console.log('useEffect', pinchFlag);
         containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
         fetchMoreTresholdBreached = true;
         onFetchMore().then(initContainer).catch(initContainer);
@@ -242,8 +250,10 @@ var PullToRefresh = function (_a) {
     isDragging = true;
   };
   var onTouchMove = function (e) {
-    if (e.type === 'touchmove') {
+    if (e.type === 'touchmove' && e.touches.length === 2) {
       handlePointerMove(e);
+      touchesLength = 2;
+      console.log('ontouchmove', touchesLength);
     }
     if (!isDragging) {
       return;
@@ -275,6 +285,7 @@ var PullToRefresh = function (_a) {
     pullDownRef.current.style.visibility = 'visible';
   };
   var onScroll = function (e) {
+    console.log('onscroll', touchesLength);
     /**
      * Check if component has already called onFetchMore
      */
@@ -282,7 +293,7 @@ var PullToRefresh = function (_a) {
     /**
      * Check if user breached fetchMoreThreshold
      */
-    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+    if (touchesLength !== 2 && canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
       onFetchMore().then(initContainer).catch(initContainer);
@@ -292,8 +303,11 @@ var PullToRefresh = function (_a) {
     isDragging = false;
     startY = 0;
     currentY = 0;
-    if (e.type === 'touchend') {
+    if (e.type === 'touchend' && touchesLength === 2) {
       handlePointerUp(e);
+      touchesLength = 0;
+      console.log('onend', touchesLength);
+      return;
     }
     // Container has not been dragged enough, put it back to it's initial state
     if (!pullToRefreshThresholdBreached) {
@@ -319,11 +333,15 @@ var PullToRefresh = function (_a) {
     React.createElement(
       'div',
       { className: 'ptr__children', ref: childrenRef },
-      children,
       React.createElement(
-        'div',
-        { className: 'ptr__fetch-more', ref: fetchMoreRef },
-        React.createElement('div', { className: 'ptr__loader ptr__fetch-more--loading' }, refreshingContent)
+        'section',
+        { className: 'scroll-content sticky-top', style: { height: `${contentsAreaHeight}px` } },
+        children,
+        React.createElement(
+          'div',
+          { className: 'ptr__fetch-more', ref: fetchMoreRef },
+          React.createElement('div', { className: 'ptr__loader ptr__fetch-more--loading' }, refreshingContent)
+        )
       )
     )
   );
