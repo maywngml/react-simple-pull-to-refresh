@@ -97,8 +97,11 @@ var PullingContent = function () {
 };
 
 var css$1 =
-  '.ptr,\n.ptr__children {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n  -webkit-overflow-scrolling: touch;\n  position: relative; }\n\n.ptr.ptr--fetch-more-treshold-breached .ptr__fetch-more {\n  display: block; }\n\n.ptr__fetch-more {\n  display: none; }\n\n/**\n  * Pull down transition \n  */\n.ptr__children,\n.ptr__pull-down {\n  transition: transform 0.2s cubic-bezier(0, 0, 0.31, 1); }\n\n.ptr__pull-down {\n  position: absolute;\n  overflow: hidden;\n  left: 0;\n  right: 0;\n  top: 0;\n  visibility: hidden; }\n  .ptr__pull-down > div {\n    display: none; }\n\n.ptr--dragging {\n  /**\n    * Hide PullMore content is treshold breached\n    */\n  /**\n    * Otherwize, display content\n    */ }\n  .ptr--dragging.ptr--pull-down-treshold-breached .ptr__pull-down--pull-more {\n    display: none; }\n  .ptr--dragging .ptr__pull-down--pull-more {\n    display: block; }\n\n.ptr--pull-down-treshold-breached {\n  /**\n    * Force opacity to 1 is pull down trashold breached\n    */\n  /**\n    * And display loader\n    */ }\n  .ptr--pull-down-treshold-breached .ptr__pull-down {\n    opacity: 1 !important; }\n  .ptr--pull-down-treshold-breached .ptr__pull-down--loading {\n    display: block; }\n\n.ptr__loader {\n  margin: 0 auto;\n  text-align: center; }\n';
+  '.ptr,\n.ptr__children {\n  height: 100%;\n  width: 100%;\n -webkit-overflow-scrolling: touch;\n  position: relative; }\n\n.ptr.ptr--fetch-more-treshold-breached .ptr__fetch-more {\n  display: block; }\n\n.ptr__fetch-more {\n  display: none; }\n\n/**\n  * Pull down transition \n  */\n.ptr__children,\n.ptr__pull-down {\n  transition: transform 0.2s cubic-bezier(0, 0, 0.31, 1); }\n\n.ptr__pull-down {\n  position: absolute;\n  overflow: hidden;\n  left: 0;\n  right: 0;\n  top: 0;\n  visibility: hidden; }\n  .ptr__pull-down > div {\n    display: none; }\n\n.ptr--dragging {\n  /**\n    * Hide PullMore content is treshold breached\n    */\n  /**\n    * Otherwize, display content\n    */ }\n  .ptr--dragging.ptr--pull-down-treshold-breached .ptr__pull-down--pull-more {\n    display: none; }\n  .ptr--dragging .ptr__pull-down--pull-more {\n    display: block; }\n\n.ptr--pull-down-treshold-breached {\n  /**\n    * Force opacity to 1 is pull down trashold breached\n    */\n  /**\n    * And display loader\n    */ }\n  .ptr--pull-down-treshold-breached .ptr__pull-down {\n    opacity: 1 !important; }\n  .ptr--pull-down-treshold-breached .ptr__pull-down--loading {\n    display: block; }\n\n.ptr__loader {\n  margin: 0 auto;\n  text-align: center; }\n';
 styleInject(css$1);
+
+var css$2 = '.ptr {\n overflow: hidden}\n';
+styleInject(css$2);
 
 var PullToRefresh = function (_a) {
   var _b = _a.isPullable,
@@ -121,8 +124,7 @@ var PullToRefresh = function (_a) {
     backgroundColor = _a.backgroundColor,
     _j = _a.className,
     className = _j === void 0 ? '' : _j,
-    contentsAreaHeight = _a.contentsAreaHeight,
-    pinchFlag = _a.pinchFlag,
+    pinchInFlag = _a.pinchInFlag,
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
   var containerRef = useRef(null);
@@ -135,7 +137,7 @@ var PullToRefresh = function (_a) {
   var startY = 0;
   var currentY = 0;
   var touchesLength = 0;
-  var contentsAreaHeight = window.outerHeight - 121;
+  var contentsAreaHeight = window.outerHeight - 123;
 
   useEffect(
     function () {
@@ -144,7 +146,7 @@ var PullToRefresh = function (_a) {
       childrenRef.current.addEventListener('mousedown', onTouchStart);
       childrenRef.current.addEventListener('touchmove', onTouchMove, { passive: false });
       childrenRef.current.addEventListener('mousemove', onTouchMove);
-      window.addEventListener('scroll', onScroll);
+      // window.addEventListener('scroll', onScroll);
       childrenRef.current.addEventListener('touchend', onEnd);
       childrenRef.current.addEventListener('mouseup', onEnd);
       document.body.addEventListener('mouseleave', onEnd);
@@ -154,7 +156,7 @@ var PullToRefresh = function (_a) {
         childrenRef.current.removeEventListener('mousedown', onTouchStart);
         childrenRef.current.removeEventListener('touchmove', onTouchMove);
         childrenRef.current.removeEventListener('mousemove', onTouchMove);
-        window.removeEventListener('scroll', onScroll);
+        // window.removeEventListener('scroll', onScroll);
         childrenRef.current.removeEventListener('touchend', onEnd);
         childrenRef.current.removeEventListener('mouseup', onEnd);
         document.body.removeEventListener('mouseleave', onEnd);
@@ -179,6 +181,7 @@ var PullToRefresh = function (_a) {
   useEffect(
     function () {
       var _a;
+      console.log('useeffect outside');
       /**
        * Check if it is already in fetching more state
        */
@@ -190,15 +193,24 @@ var PullToRefresh = function (_a) {
       /**
        * Proceed
        */
-      if (!pinchFlag && canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
-        console.log('useEffect', pinchFlag);
+      if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+        console.log('useeffect inside', canFetchMore);
         containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
         fetchMoreTresholdBreached = true;
-        onFetchMore().then(initContainer).catch(initContainer);
+        onFetchMore('useeffect').then(initContainer).catch(initContainer);
       }
     },
-    [canFetchMore, children]
+    [canFetchMore]
   );
+
+  useEffect(() => {
+    if (pinchInFlag) return;
+    const timeout = setTimeout(() => {
+      checkFetchMore('onend');
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [pinchInFlag]);
+
   /**
    * Returns distance to bottom of the container
    */
@@ -214,8 +226,9 @@ var PullToRefresh = function (_a) {
        * Reset Styles
        */
       if (childrenRef.current) {
-        childrenRef.current.style.overflowX = 'hidden';
-        childrenRef.current.style.overflowY = 'auto';
+        // section의 sticky가 정상 작동하기 위해 제거
+        // childrenRef.current.style.overflowX = 'hidden';
+        // childrenRef.current.style.overflowY = 'auto';
         childrenRef.current.style.transform = 'translate(0px, 0px)';
       }
       if (pullDownRef.current) {
@@ -254,7 +267,10 @@ var PullToRefresh = function (_a) {
       handlePointerMove(e);
       touchesLength = 2;
       console.log('ontouchmove', touchesLength);
+      return;
     }
+    console.log('ontouchmove', window.scrollY, childrenRef.current.scrollHeight);
+    // checkFetchMore("ontouchmove");
     if (!isDragging) {
       return;
     }
@@ -284,8 +300,20 @@ var PullToRefresh = function (_a) {
     childrenRef.current.style.transform = 'translate(0px, ' + (currentY - startY) + 'px)';
     pullDownRef.current.style.visibility = 'visible';
   };
-  var onScroll = function (e) {
-    console.log('onscroll', touchesLength);
+  var checkFetchMore = function (location) {
+    const confirmScrollLocation =
+      location === 'onend'
+        ? childrenRef.current.scrollHeight <= window.innerHeight
+        : getScrollToBottomValue() < fetchMoreThreshold;
+    console.log(
+      'onscroll outside',
+      childrenRef.current.scrollHeight,
+      window.innerHeight,
+      touchesLength,
+      canFetchMore,
+      fetchMoreTresholdBreached
+    );
+    if (!confirmScrollLocation) return;
     /**
      * Check if component has already called onFetchMore
      */
@@ -293,10 +321,11 @@ var PullToRefresh = function (_a) {
     /**
      * Check if user breached fetchMoreThreshold
      */
-    if (touchesLength !== 2 && canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+    if (canFetchMore && onFetchMore) {
+      console.log('onscroll inside', touchesLength, fetchMoreThreshold);
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
-      onFetchMore().then(initContainer).catch(initContainer);
+      onFetchMore(`checkFetchMore ${location}`).then(initContainer).catch(initContainer);
     }
   };
   var onEnd = function (e) {
@@ -306,7 +335,10 @@ var PullToRefresh = function (_a) {
     if (e.type === 'touchend' && touchesLength === 2) {
       handlePointerUp(e);
       touchesLength = 0;
-      console.log('onend', touchesLength);
+      console.log('onend', touchesLength, window.scrollY, childrenRef.current.scrollHeight);
+      // setTimeout(() => {
+      //   checkFetchMore("onend")
+      // }, 300);
       return;
     }
     // Container has not been dragged enough, put it back to it's initial state
