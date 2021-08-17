@@ -97,10 +97,17 @@ var PullingContent = function () {
 };
 
 var css$1 =
+<<<<<<< HEAD
   '.ptr,\n.ptr__children {\n  height: 100%;\n  width: 100%;\n -webkit-overflow-scrolling: touch;\n  position: relative; }\n\n.ptr.ptr--fetch-more-treshold-breached .ptr__fetch-more {\n  display: block; }\n\n.ptr__fetch-more {\n  display: none; }\n\n/**\n  * Pull down transition \n  */\n.ptr__children,\n.ptr__pull-down {\n  transition: transform 0.2s cubic-bezier(0, 0, 0.31, 1); }\n\n.ptr__pull-down {\n  position: absolute;\n  overflow: hidden;\n  left: 0;\n  right: 0;\n  top: 0;\n  visibility: hidden; }\n  .ptr__pull-down > div {\n    display: none; }\n\n.ptr--dragging {\n  /**\n    * Hide PullMore content is treshold breached\n    */\n  /**\n    * Otherwize, display content\n    */ }\n  .ptr--dragging.ptr--pull-down-treshold-breached .ptr__pull-down--pull-more {\n    display: none; }\n  .ptr--dragging .ptr__pull-down--pull-more {\n    display: block; }\n\n.ptr--pull-down-treshold-breached {\n  /**\n    * Force opacity to 1 is pull down trashold breached\n    */\n  /**\n    * And display loader\n    */ }\n  .ptr--pull-down-treshold-breached .ptr__pull-down {\n    opacity: 1 !important; }\n  .ptr--pull-down-treshold-breached .ptr__pull-down--loading {\n    display: block; }\n\n.ptr__loader {\n  margin: 0 auto;\n  text-align: center; }\n';
 styleInject(css$1);
 
 var css$2 = '.ptr {\n overflow: hidden}\n'
+=======
+  '.ptr,\n.ptr__children {\n  height: 100%;\n  width: 100%;\n -webkit-overflow-scrolling: touch;\n  position: relative; }\n\n.ptr.ptr--fetch-more-treshold-breached .ptr_children .scroll-content.sticky-top .ptr__fetch-more {\n  display: block; height: 30px }\n\n.ptr__fetch-more {\n  display: none; }\n\n/**\n  * Pull down transition \n  */\n.ptr__children,\n.ptr__pull-down {\n  transition: transform 0.2s cubic-bezier(0, 0, 0.31, 1); }\n\n.ptr__pull-down {\n  position: absolute;\n  overflow: hidden;\n  left: 0;\n  right: 0;\n  top: 0;\n  visibility: hidden; }\n  .ptr__pull-down > div {\n    display: none; }\n\n.ptr--dragging {\n  /**\n    * Hide PullMore content is treshold breached\n    */\n  /**\n    * Otherwize, display content\n    */ }\n  .ptr--dragging.ptr--pull-down-treshold-breached .ptr__pull-down--pull-more {\n    display: none; }\n  .ptr--dragging .ptr__pull-down--pull-more {\n    display: block; }\n\n.ptr--pull-down-treshold-breached {\n  /**\n    * Force opacity to 1 is pull down trashold breached\n    */\n  /**\n    * And display loader\n    */ }\n  .ptr--pull-down-treshold-breached .ptr__pull-down {\n    opacity: 1 !important; }\n  .ptr--pull-down-treshold-breached .ptr__pull-down--loading {\n    display: block; }\n\n.ptr__loader {\n  margin: 0 auto;\n  text-align: center; }\n';
+styleInject(css$1);
+
+var css$2 = '.ptr {\n overflow: hidden}\n';
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
 styleInject(css$2);
 
 var PullToRefresh = function (_a) {
@@ -124,20 +131,29 @@ var PullToRefresh = function (_a) {
     backgroundColor = _a.backgroundColor,
     _j = _a.className,
     className = _j === void 0 ? '' : _j,
+<<<<<<< HEAD
+=======
+    pinchInFlag = _a.pinchInFlag,
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
   var containerRef = useRef(null);
   var childrenRef = useRef(null);
   var pullDownRef = useRef(null);
   var fetchMoreRef = useRef(null);
+  var isFirstLoad = useRef(true);
   var pullToRefreshThresholdBreached = false;
   var fetchMoreTresholdBreached = false; // if true, fetchMore loader is displayed
   var isDragging = false;
   var startY = 0;
   var currentY = 0;
+<<<<<<< HEAD
   var touchesLength = 0;
   var contentsAreaHeight = window.outerHeight - 125;
   console.log("pullrefresh 바깥", touchesLength)
+=======
+  var contentsAreaHeight = window.outerHeight - 123;
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
 
   useEffect(
     function () {
@@ -146,7 +162,7 @@ var PullToRefresh = function (_a) {
       childrenRef.current.addEventListener('mousedown', onTouchStart);
       childrenRef.current.addEventListener('touchmove', onTouchMove, { passive: false });
       childrenRef.current.addEventListener('mousemove', onTouchMove);
-      window.addEventListener('scroll', onScroll);
+      // window.addEventListener('scroll', onScroll);
       childrenRef.current.addEventListener('touchend', onEnd);
       childrenRef.current.addEventListener('mouseup', onEnd);
       document.body.addEventListener('mouseleave', onEnd);
@@ -156,7 +172,7 @@ var PullToRefresh = function (_a) {
         childrenRef.current.removeEventListener('mousedown', onTouchStart);
         childrenRef.current.removeEventListener('touchmove', onTouchMove);
         childrenRef.current.removeEventListener('mousemove', onTouchMove);
-        window.removeEventListener('scroll', onScroll);
+        // window.removeEventListener('scroll', onScroll);
         childrenRef.current.removeEventListener('touchend', onEnd);
         childrenRef.current.removeEventListener('mouseup', onEnd);
         document.body.removeEventListener('mouseleave', onEnd);
@@ -178,6 +194,7 @@ var PullToRefresh = function (_a) {
    */
   useEffect(
     function () {
+<<<<<<< HEAD
       var _a;
       console.log("useeffect outside")
       /**
@@ -196,10 +213,54 @@ var PullToRefresh = function (_a) {
         containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
         fetchMoreTresholdBreached = true;
         onFetchMore().then(initContainer).catch(initContainer);
+=======
+      /**
+       * Check if it is already in fetching more state
+       */
+      if (isFirstLoad.current) {
+        isFirstLoad.current = false;
+        checkFirstLoadFetchMore();
+        return;
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
       }
+      if (pinchInFlag || !canFetchMore) return;
+      const timeout = setTimeout(() => {
+        checkFetchMore('onend');
+      }, 300);
+      return () => clearTimeout(timeout);
     },
+<<<<<<< HEAD
     [canFetchMore]
+=======
+    [canFetchMore, pinchInFlag]
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
   );
+
+  // useEffect(() => {
+  //   if (pinchInFlag || canFetchMore) return;
+  //   const timeout = setTimeout(() => {
+  //       checkFetchMore("onend")
+  //   }, 300);
+  //   return() => clearTimeout(timeout)
+  // }, [canFetchMore, pinchInFlag])
+
+  var checkFirstLoadFetchMore = function () {
+    var _a;
+
+    if (!((_a = containerRef) === null || _a === void 0 ? void 0 : _a.current)) return;
+    var isAlreadyFetchingMore = containerRef.current.classList.contains('ptr--fetch-more-treshold-breached');
+    if (isAlreadyFetchingMore) return;
+    /**
+     * Proceed
+     */
+    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+      console.log('useeffect firstload', canFetchMore);
+      fetchMoreTresholdBreached = true;
+      containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
+      onFetchMore('useeffect').then(initContainer).catch(initContainer);
+    }
+  };
+
   /**
    * Returns distance to bottom of the container
    */
@@ -254,8 +315,14 @@ var PullToRefresh = function (_a) {
   var onTouchMove = function (e) {
     if (e.type === 'touchmove' && e.touches.length === 2) {
       handlePointerMove(e);
-      touchesLength = 2;
-      console.log('ontouchmove', touchesLength);
+      console.log('ontouchmove');
+      return;
+    }
+    // TODO: 지금은 0.3이지만 배포할때는 0.6으로 바꿔야됨
+    if (window.scrollY >= childrenRef.current.scrollHeight * 0.3) {
+      // setTimeout(() => {
+      checkFetchMore('ontouchmove');
+      // }, 200);
       return;
     }
     if (!isDragging) {
@@ -287,8 +354,17 @@ var PullToRefresh = function (_a) {
     childrenRef.current.style.transform = 'translate(0px, ' + (currentY - startY) + 'px)';
     pullDownRef.current.style.visibility = 'visible';
   };
+<<<<<<< HEAD
   var onScroll = function (e) {
     console.log('onscroll outside', touchesLength, fetchMoreTresholdBreached);
+=======
+  var checkFetchMore = function (location) {
+    const confirmScrollLocation =
+      location === 'onend' ? childrenRef.current.scrollHeight <= window.innerHeight : true;
+    console.log('checkFetchMore outside', canFetchMore);
+    if (!confirmScrollLocation) return;
+    if (containerRef.current.classList.contains('ptr--fetch-more-treshold-breached')) return;
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
     /**
      * Check if component has already called onFetchMore
      */
@@ -296,22 +372,29 @@ var PullToRefresh = function (_a) {
     /**
      * Check if user breached fetchMoreThreshold
      */
+<<<<<<< HEAD
     if (touchesLength !== 2 && canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
       console.log("onscroll inside", touchesLength, getScrollToBottomValue(), fetchMoreThreshold)
+=======
+    if (canFetchMore && onFetchMore) {
+      console.log('checkFetchMore inside', fetchMoreThreshold);
+>>>>>>> 79961f1c606e4586beb01133ebebe274cbb382ec
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
-      onFetchMore().then(initContainer).catch(initContainer);
+      onFetchMore(`checkFetchMore ${location}`).then(initContainer).catch(initContainer);
     }
   };
   var onEnd = function (e) {
     isDragging = false;
     startY = 0;
     currentY = 0;
-    if (e.type === 'touchend' && touchesLength === 2) {
+    if (e.type === 'touchend') {
       handlePointerUp(e);
-      touchesLength = 0;
-      console.log('onend', touchesLength);
-      return;
+      console.log('onend', window.scrollY, childrenRef.current.scrollHeight);
+      // setTimeout(() => {
+      //   checkFetchMore("onend")
+      // }, 300);
+      // return;
     }
     // Container has not been dragged enough, put it back to it's initial state
     if (!pullToRefreshThresholdBreached) {
@@ -322,6 +405,9 @@ var PullToRefresh = function (_a) {
     if (childrenRef.current) {
       childrenRef.current.style.overflow = 'visible';
       childrenRef.current.style.transform = 'translate(0px, ' + pullDownThreshold + 'px)';
+    }
+    if (!canFetchMore) {
+      isFirstLoad.current = true;
     }
     onRefresh().then(initContainer).catch(initContainer);
   };
