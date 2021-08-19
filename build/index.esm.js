@@ -103,7 +103,7 @@ styleInject(css$1);
 var css$2 = '.ptr {\n overflow: hidden}\n';
 styleInject(css$2);
 
-var PullToRefresh = function (_a) {
+var PullToRefresh = forwardRef((_a, ref) => {
   var _b = _a.isPullable,
     isPullable = _b === void 0 ? true : _b,
     _c = _a.canFetchMore,
@@ -126,11 +126,15 @@ var PullToRefresh = function (_a) {
     className = _j === void 0 ? '' : _j,
     // pinchInFlag 제외하며 제거
     // pinchInFlag = _a.pinchInFlag,
+    containerRef = ref[0],
+    childrenRef = ref[1],
+    pullDownRef = ref[2],
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
-  var containerRef = useRef(null);
-  var childrenRef = useRef(null);
-  var pullDownRef = useRef(null);
+  // ref들 props로 받아옴
+  // var containerRef = useRef(null);
+  // var childrenRef = useRef(null);
+  // var pullDownRef = useRef(null);
   var fetchMoreRef = useRef(null);
   // pinchInFlag 제외하며 제거
   // var isFirstLoad = useRef(true);
@@ -148,7 +152,7 @@ var PullToRefresh = function (_a) {
       childrenRef.current.addEventListener('mousedown', onTouchStart);
       childrenRef.current.addEventListener('touchmove', onTouchMove, { passive: false });
       childrenRef.current.addEventListener('mousemove', onTouchMove);
-      // window.addEventListener('scroll', onScroll);
+      window.addEventListener('scroll', onScroll);
       childrenRef.current.addEventListener('touchend', onEnd);
       childrenRef.current.addEventListener('mouseup', onEnd);
       document.body.addEventListener('mouseleave', onEnd);
@@ -158,7 +162,7 @@ var PullToRefresh = function (_a) {
         childrenRef.current.removeEventListener('mousedown', onTouchStart);
         childrenRef.current.removeEventListener('touchmove', onTouchMove);
         childrenRef.current.removeEventListener('mousemove', onTouchMove);
-        // window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('scroll', onScroll);
         childrenRef.current.removeEventListener('touchend', onEnd);
         childrenRef.current.removeEventListener('mouseup', onEnd);
         document.body.removeEventListener('mouseleave', onEnd);
@@ -180,15 +184,15 @@ var PullToRefresh = function (_a) {
    */
   useEffect(
     function () {
-      console.log("pullrefresh useeffect")
+      console.log('pullrefresh useeffect');
       /**
        * Check if it is already in fetching more state
        */
       // pinchInFlag props에서 제외하며 제거
       // => checkFirstLoadFetchMore 함수 내용을 여기다 옮겨 적으면 됨
       // if (isFirstLoad.current) {
-        // isFirstLoad.current = false;
-        checkFirstLoadFetchMore();
+      // isFirstLoad.current = false;
+      checkFirstLoadFetchMore();
       //   return;
       // }
       // if (pinchInFlag || !canFetchMore) return;
@@ -218,7 +222,12 @@ var PullToRefresh = function (_a) {
     /**
      * Proceed
      */
-    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && childrenRef.current.scrollHeight <= window.innerHeight && onFetchMore) {
+    if (
+      canFetchMore &&
+      getScrollToBottomValue() < fetchMoreThreshold &&
+      childrenRef.current.scrollHeight <= window.innerHeight &&
+      onFetchMore
+    ) {
       console.log('useeffect firstload', canFetchMore);
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
@@ -240,20 +249,21 @@ var PullToRefresh = function (_a) {
       /**
        * Reset Styles
        */
-      if (childrenRef.current) {
-        // section의 sticky가 정상 작동하기 위해 제거
-        // childrenRef.current.style.overflowX = 'hidden';
-        // childrenRef.current.style.overflowY = 'auto';
-        childrenRef.current.style.transform = 'translate(0px, 0px)';
-      }
-      if (pullDownRef.current) {
-        pullDownRef.current.style.opacity = '0';
-      }
-      if (containerRef.current) {
-        containerRef.current.classList.remove('ptr--pull-down-treshold-breached');
-        containerRef.current.classList.remove('ptr--dragging');
-        containerRef.current.classList.remove('ptr--fetch-more-treshold-breached');
-      }
+      // 해당 로직은 FeedGridPage에서 진행
+      // if (childrenRef.current) {
+      //   // section의 sticky가 정상 작동하기 위해 제거
+      //   // childrenRef.current.style.overflowX = 'hidden';
+      //   // childrenRef.current.style.overflowY = 'auto';
+      //   childrenRef.current.style.transform = 'translate(0px, 0px)';
+      // }
+      // if (pullDownRef.current) {
+      //   // pullDownRef.current.style.opacity = '0';
+      // }
+      // if (containerRef.current) {
+      //   // containerRef.current.classList.remove('ptr--pull-down-treshold-breached');
+      //   containerRef.current.classList.remove('ptr--dragging');
+      //   // containerRef.current.classList.remove('ptr--fetch-more-treshold-breached');
+      // }
       if (pullToRefreshThresholdBreached) pullToRefreshThresholdBreached = false;
       if (fetchMoreTresholdBreached) fetchMoreTresholdBreached = false;
     });
@@ -283,13 +293,13 @@ var PullToRefresh = function (_a) {
       console.log('ontouchmove');
       return;
     }
-    // TODO: 지금은 0.3이지만 배포할때는 0.6으로 바꿔야됨
-    if (window.scrollY >= childrenRef.current.scrollHeight * 0.3) {
-      // setTimeout(() => {
-      checkFetchMore('ontouchmove');
-      // }, 200);
-      return;
-    }
+    // onscorll에서 페이징 처리하기 위해 제거
+    // if (window.scrollY >= childrenRef.current.scrollHeight * 0.3) {
+    // setTimeout(() => {
+    // checkFetchMore('ontouchmove');
+    // }, 200);
+    // return;
+    // }
     if (!isDragging) {
       return;
     }
@@ -319,12 +329,28 @@ var PullToRefresh = function (_a) {
     childrenRef.current.style.transform = 'translate(0px, ' + (currentY - startY) + 'px)';
     pullDownRef.current.style.visibility = 'visible';
   };
-  var checkFetchMore = function (location) {
-    const confirmScrollLocation =
-      location === 'onend' ? childrenRef.current.scrollHeight <= window.innerHeight : true;
-    console.log('checkFetchMore outside', canFetchMore);
-    if (!confirmScrollLocation) return;
-    if (containerRef.current.classList.contains('ptr--fetch-more-treshold-breached')) return;
+  // onscroll 제거하고 선언했던 함수, 페이징 방법 변경하며 제거
+  // var checkFetchMore = function (location) {
+  //   const confirmScrollLocation =
+  //     location === 'onend' ? childrenRef.current.scrollHeight <= window.innerHeight : true;
+  //   console.log('checkFetchMore outside', canFetchMore);
+  //   if (!confirmScrollLocation) return;
+  //   if (containerRef.current.classList.contains('ptr--fetch-more-treshold-breached')) return;
+  //   /**
+  //    * Check if component has already called onFetchMore
+  //    */
+  //   if (fetchMoreTresholdBreached) return;
+  //   /**
+  //    * Check if user breached fetchMoreThreshold
+  //    */
+  //   if (canFetchMore && onFetchMore) {
+  //     console.log('checkFetchMore inside', fetchMoreThreshold);
+  //     fetchMoreTresholdBreached = true;
+  //     containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
+  //     onFetchMore(`checkFetchMore ${location}`).then(initContainer).catch(initContainer);
+  //   }
+  // };
+  var onScroll = function (e) {
     /**
      * Check if component has already called onFetchMore
      */
@@ -332,11 +358,10 @@ var PullToRefresh = function (_a) {
     /**
      * Check if user breached fetchMoreThreshold
      */
-    if (canFetchMore && onFetchMore) {
-      console.log('checkFetchMore inside', fetchMoreThreshold);
+    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
-      onFetchMore(`checkFetchMore ${location}`).then(initContainer).catch(initContainer);
+      onFetchMore().then(initContainer).catch(initContainer);
     }
   };
   var onEnd = function (e) {
@@ -391,6 +416,6 @@ var PullToRefresh = function (_a) {
       )
     )
   );
-};
+});
 
 export default PullToRefresh;
