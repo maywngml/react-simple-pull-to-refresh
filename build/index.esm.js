@@ -124,14 +124,16 @@ var PullToRefresh = function (_a) {
     backgroundColor = _a.backgroundColor,
     _j = _a.className,
     className = _j === void 0 ? '' : _j,
-    pinchInFlag = _a.pinchInFlag,
+    // pinchInFlag 제외하며 제거
+    // pinchInFlag = _a.pinchInFlag,
     handlePointerMove = _a.handlePointerMove,
     handlePointerUp = _a.handlePointerUp;
   var containerRef = useRef(null);
   var childrenRef = useRef(null);
   var pullDownRef = useRef(null);
   var fetchMoreRef = useRef(null);
-  var isFirstLoad = useRef(true);
+  // pinchInFlag 제외하며 제거
+  // var isFirstLoad = useRef(true);
   var pullToRefreshThresholdBreached = false;
   var fetchMoreTresholdBreached = false; // if true, fetchMore loader is displayed
   var isDragging = false;
@@ -178,21 +180,25 @@ var PullToRefresh = function (_a) {
    */
   useEffect(
     function () {
+      console.log("pullrefresh useeffect")
       /**
        * Check if it is already in fetching more state
        */
-      if (isFirstLoad.current) {
-        isFirstLoad.current = false;
+      // pinchInFlag props에서 제외하며 제거
+      // => checkFirstLoadFetchMore 함수 내용을 여기다 옮겨 적으면 됨
+      // if (isFirstLoad.current) {
+        // isFirstLoad.current = false;
         checkFirstLoadFetchMore();
-        return;
-      }
-      if (pinchInFlag || !canFetchMore) return;
-      const timeout = setTimeout(() => {
-        checkFetchMore('onend');
-      }, 300);
-      return () => clearTimeout(timeout);
+      //   return;
+      // }
+      // if (pinchInFlag || !canFetchMore) return;
+      // const timeout = setTimeout(() => {
+      //   checkFetchMore('onend');
+      // }, 300);
+      // return () => clearTimeout(timeout);
     },
-    [canFetchMore, pinchInFlag]
+    // pinchInFlag deps에서 제거
+    [canFetchMore]
   );
 
   // useEffect(() => {
@@ -212,7 +218,7 @@ var PullToRefresh = function (_a) {
     /**
      * Proceed
      */
-    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && onFetchMore) {
+    if (canFetchMore && getScrollToBottomValue() < fetchMoreThreshold && childrenRef.current.scrollHeight <= window.innerHeight && onFetchMore) {
       console.log('useeffect firstload', canFetchMore);
       fetchMoreTresholdBreached = true;
       containerRef.current.classList.add('ptr--fetch-more-treshold-breached');
@@ -355,9 +361,10 @@ var PullToRefresh = function (_a) {
       childrenRef.current.style.overflow = 'visible';
       childrenRef.current.style.transform = 'translate(0px, ' + pullDownThreshold + 'px)';
     }
-    if (!canFetchMore) {
-      isFirstLoad.current = true;
-    }
+    // pinchInFlag props에서 제외하며 제거
+    // if (!canFetchMore) {
+    //   isFirstLoad.current = true;
+    // }
     onRefresh().then(initContainer).catch(initContainer);
   };
   return React.createElement(
